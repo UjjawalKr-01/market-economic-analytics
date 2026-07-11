@@ -1,0 +1,6 @@
+Model Accuracy (Prophet, holdout matched to 5yr forecast horizon)
+Generated automatically from actual model evaluation -- not hardcoded.
+
+CPI       -> MAE: 24.70   RMSE: 27.16   (trained on 1954-2025, n=857, log-transformed)
+FEDFUNDS  -> MAE: 2.98   RMSE: 3.54   (trained on 1954-2025, n=857, logistic growth capped 0-12%)
+SP500     -> MAE: 189.01   RMSE: 273.32   (trained on 2021-2025 ONLY, n=58 -- FRED's SP500 series has a limited lookback window; treat this forecast as low-confidence beyond ~12-18 months, see README)
