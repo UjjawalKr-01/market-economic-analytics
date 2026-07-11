@@ -85,7 +85,7 @@ These are **higher** than an easier evaluation window would show — intentional
 
 ## Limitations
 
-*Read before trusting the forecasts — this is the part most projects skip.*
+*Read before trusting the forecasts —*
 
 - **S&P 500 forecast is low-confidence.** Only ~5 years of training data means uncertainty compounds hugely over a 5-year horizon. Treat the point forecast as directional; the raw confidence interval (in the CSV) is close to meaningless past ~12–18 months. The chart caps the shaded band at 2x for readability — the full uncertainty lives in `Data/processed/sp500_forecast_2025_2030.csv`.
 - **Fed Funds is fundamentally hard to trend-extrapolate.** It's policy-driven and cyclical, not a growing quantity. An earlier version of this model extrapolated a straight line from the 2022–23 hikes and forecast 8%+ by 2026 — while the real rate was falling. Fixed here with bounded growth and a boundary-continuity correction, but a 5-year Fed Funds forecast should still read as "roughly flat to gently declining, wide uncertainty," not a precise number.
