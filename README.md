@@ -129,9 +129,9 @@ Models are scored on a holdout period matching the five-year forecast horizon us
 
 | Indicator | Holdout period | MAE | RMSE |
 |---|---|---|---|
-| CPI | [YYYY–YYYY] | [ ] | [ ] |
-| Federal Funds Rate | [YYYY–YYYY] | [ ] | [ ] |
-| S&P 500 | [YYYY–YYYY] | [ ] | [ ] |
+| CPI | [1954–2025 (n = 857)] | [24.70 ] | [ 27.16] |
+| Federal Funds Rate | [1954–2025 (n = 857)] | [2.98 ] | [3.54 ] |
+| S&P 500 | [2021–2025 (n = 58)] | [189.01 ] | [ 273.32] |
 
 > ✏️ Copy these from [`reports/model_accuracy.txt`](reports/model_accuracy.txt) so readers don't have to open another file.
 
