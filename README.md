@@ -1,15 +1,15 @@
-# Market & Economic Analytics
+**<div align="center">
 
-### Exploring 70 Years of US Macroeconomic Trends, Financial Markets & Time-Series Forecasting
+# 📈 Market & Economic Analytics
 
-An end-to-end data analytics project investigating historical US economic behaviour through inflation, unemployment, monetary policy, and equity market indicators. Combining exploratory data analysis, statistical correlation analysis, and Prophet-based time-series forecasting to understand historical patterns and evaluate potential future trends.
+**70 years of US macroeconomic data, financial markets, and an honest look at how well Prophet can forecast them.**
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
   <img src="https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white"/>
   <img src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white"/>
   <img src="https://img.shields.io/badge/Scikit--learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Prophet-000000?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Prophet-0A66C2?style=for-the-badge&logo=meta&logoColor=white"/>
   <img src="https://img.shields.io/badge/Jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white"/>
   <img src="https://img.shields.io/badge/Matplotlib-11557C?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Seaborn-4C72B0?style=for-the-badge"/>
@@ -21,309 +21,209 @@ An end-to-end data analytics project investigating historical US economic behavi
   </a>
 </p>
 
+[Overview](#overview) · [Key Findings](#key-findings) · [Visual Tour](#visual-tour) · [Forecasting](#forecasting) · [Quick Start](#quick-start) · [Limitations](#limitations)
+
+</div>
+
 ---
 
-## Overview
+<a id="overview"></a>
 
-Economic indicators are interconnected, but their relationships can change significantly across different periods and economic conditions.
+## 🔍 Overview
 
-This project explores approximately seven decades of US macroeconomic data, examining the historical behaviour of major economic indicators and their relationships with financial markets.
+How do inflation, unemployment, interest rates and stock markets move together, and can a time-series model predict where they go next?
 
-The analysis combines historical economic data with statistical techniques and time-series forecasting to investigate economic trends, identify correlations, and evaluate the practical limitations of predictive modelling.
+This project analyses **CPI, the unemployment rate, the Federal Funds Rate and the S&P 500** using data from [FRED](https://fred.stlouisfed.org/). It covers the full workflow: cleaning, exploratory analysis, correlation analysis, five-year Prophet forecasts, and a candid evaluation of where those forecasts break down (notably around the 2021–2023 inflation shock).
 
-### Key Objectives
-
-- Analyse long-term US macroeconomic trends from 1954 to 2025.
-- Investigate historical inflation and unemployment patterns.
-- Examine Federal Funds Rate movements and monetary policy cycles.
-- Explore the relationship between macroeconomic indicators and equity markets.
-- Apply time-series forecasting to selected economic and financial indicators.
-- Evaluate model performance and identify limitations in long-term economic forecasting.
-
-## Key Highlights
-
-- Approximately 70 years of historical US macroeconomic analysis.
-- Integration of four major economic and financial indicators.
-- Separate datasets for long-term macroeconomic analysis and recent combined analysis.
-- Exploratory data analysis and statistical correlation analysis.
-- Indicator-specific time-series forecasting using Prophet.
-- Forecast evaluation using MAE and RMSE.
-- Investigation of forecasting limitations, trend behaviour, and uncertainty.
-
-## Technology Stack
-
-| Technology | Purpose |
+| | |
 |---|---|
-| Python | Core programming language |
-| Pandas | Data manipulation and preprocessing |
-| NumPy | Numerical operations |
-| Scikit-learn | Statistical and analytical utilities |
-| Prophet | Time-series forecasting |
-| Matplotlib | Data visualisation |
-| Seaborn | Statistical visualisation |
-| Jupyter Notebook | Interactive analysis and experimentation |
+| **Period** | 1954–2025 (macro indicators), 2021–2025 (with S&P 500) |
+| **Indicators** | CPI · Unemployment · Fed Funds Rate · S&P 500 |
+| **Methods** | EDA, correlation analysis, Prophet forecasting |
+| **Evaluation** | MAE and RMSE on a 5-year holdout |
+| **Stack** | Python, Pandas, NumPy, scikit-learn, Prophet, Matplotlib, Seaborn |
 
-## Data Sources
+<a id="key-findings"></a>
 
-The primary data source for this project is [Federal Reserve Economic Data (FRED)](https://fred.stlouisfed.org/).
+## 🎯 Key Findings
 
-Four major indicators were selected for the analysis:
+> ✏️ **Fill these in from your notebooks.** A README that states results gets read; one that only describes method doesn't. Examples of the format are shown below, so replace the bracketed parts with your real numbers.
 
-| Indicator | FRED Series ID | Description |
+- **Inflation:** CPI [rose X-fold between 1954 and 2025]; the sharpest acceleration was [period], with year-on-year inflation peaking near [X%] in [month/year].
+- **Monetary policy:** The Fed Funds Rate peaked at [X%] in [year] and [describe 2021–2023 tightening cycle].
+- **Correlations:** In the long-term data, [pair] showed [strong/weak, positive/negative] correlation (r = [X]). In 2021–2025, the S&P 500 correlated [r = X] with [indicator], a relationship that [did / did not] hold in the long-run data.
+- **Forecast accuracy:** The CPI model performed [best/worst] (see [results](#model-evaluation)), while the S&P 500 forecast had the widest uncertainty because of its short training history.
+
+## 🗂️ Data
+
+Source: [Federal Reserve Economic Data (FRED)](https://fred.stlouisfed.org/)
+
+| Indicator | FRED Series | Measures | Original source |
+|---|---|---|---|
+| Consumer Price Index | [`CPIAUCSL`](https://fred.stlouisfed.org/series/CPIAUCSL) | Consumer price level | U.S. Bureau of Labor Statistics |
+| Unemployment Rate | [`UNRATE`](https://fred.stlouisfed.org/series/UNRATE) | % of labour force unemployed | U.S. Bureau of Labor Statistics |
+| Federal Funds Rate | [`FEDFUNDS`](https://fred.stlouisfed.org/series/FEDFUNDS) | Effective federal funds rate | Board of Governors of the Federal Reserve System |
+| S&P 500 | [`SP500`](https://fred.stlouisfed.org/series/SP500) | US equity market index | S&P Dow Jones Indices LLC |
+
+FRED, maintained by the Federal Reserve Bank of St. Louis, aggregates and distributes these series; it does not produce them.
+
+**Why two datasets?** The FRED `SP500` series only has a short history. Merging everything on a common date range would have thrown away decades of macro data, so the project keeps two datasets:
+
+| File | Coverage | Used for |
 |---|---|---|
-| Consumer Price Index | `CPIAUCSL` | Measures changes in consumer price levels |
-| Unemployment Rate | `UNRATE` | Represents the percentage of the labour force that is unemployed |
-| Federal Funds Rate | `FEDFUNDS` | Represents the effective federal funds interest rate |
-| S&P 500 | `SP500` | Tracks the performance of the US equity market |
+| `macro_long_history.csv` | 1954–2025 | Long-run CPI, unemployment and Fed Funds analysis |
+| `master_monthly_dataset.csv` | 2021–2025 | Cross-indicator analysis including the S&P 500 |
 
-### Dataset Architecture
+<a id="visual-tour"></a>
 
-The project uses two distinct datasets to account for differences in historical data availability.
+## 🖼️ Visual Tour
 
-| Dataset | Coverage | Purpose |
+### Long-run trends (1954–2025)
+
+| CPI | Unemployment | Federal Funds Rate |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/cpi_trend_long_history.png" alt="CPI" width="100%"/> | <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/unrate_trend_long_history.png" alt="Unemployment" width="100%"/> | <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/fedfunds_trend_long_history.png" alt="Fed Funds" width="100%"/> |
+
+### Correlation analysis
+
+| Long-term (1954–2025) | Recent, incl. S&P 500 (2021–2025) |
+|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/correlation_heatmap_long_history.png" alt="Long-term correlation" width="100%"/> | <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/correlation_heatmap_recent_with_sp500.png" alt="Recent correlation" width="100%"/> |
+
+> Correlation is not causation, and results are sensitive to the period chosen. The two heatmaps are deliberately shown side by side to illustrate that.
+
+### Recent market behaviour (2021–2025)
+
+| S&P 500 trend | Indexed indicators (common base) |
+|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/sp500_trend_recent.png" alt="S&P 500" width="100%"/> | <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/indexed_indicators_2021_2025.png" alt="Indexed indicators" width="100%"/> |
+
+<a id="forecasting"></a>
+
+## 🔮 Forecasting
+
+Each series gets a Prophet configuration suited to its behaviour, rather than one-size-fits-all settings.
+
+| Indicator | Approach | Rationale |
 |---|---|---|
-| Long-term macroeconomic dataset | 1954–2025 | Historical analysis of CPI, unemployment, and Federal Funds Rate |
-| Combined monthly dataset | 2021–2025 | Comparative analysis incorporating all four indicators |
+| CPI | Linear trend on **log-transformed** CPI | Price levels grow roughly exponentially |
+| Fed Funds Rate | **Logistic growth** with bounded limits | Policy rates are cyclical and cannot go below a floor |
+| S&P 500 | Linear trend on **log-transformed** index | Works with the shorter available history |
 
-The S&P 500 has a shorter historical coverage in the selected dataset. Combining all indicators using a common date range would have discarded valuable historical macroeconomic information.
+All models produce a **five-year forecast** with uncertainty intervals.
 
-To avoid this, the datasets were maintained separately, preserving long-term historical coverage while enabling recent-period comparative analysis.
+| CPI | Fed Funds Rate | S&P 500 |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/cpi_forecast.png" alt="CPI forecast" width="100%"/> | <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/fedfunds_forecast.png" alt="Fed Funds forecast" width="100%"/> | <img src="https://raw.githubusercontent.com/UjjawalKr-01/market-economic-analytics/main/visuals/sp500_forecast.png" alt="S&P 500 forecast" width="100%"/> |
 
----
+> ⚠️ **The S&P 500 forecast is the least reliable.** With limited training data, its long-horizon intervals are very wide and should not be read as an estimate of future market performance.
 
-## Exploratory Data Analysis
+<a id="model-evaluation"></a>
 
-The exploratory analysis investigates the historical behaviour of individual indicators and identifies patterns across different economic periods.
+## 📏 Model Evaluation
 
-### 1. Historical Macroeconomic Trends
+Models are scored on a holdout period matching the five-year forecast horizon using:
 
-The long-term analysis focuses on three major indicators covering the period from 1954 to 2025.
+- **MAE** (Mean Absolute Error): average size of the miss
+- **RMSE** (Root Mean Squared Error): like MAE but penalises large misses more
 
-#### Consumer Price Index (CPI)
+| Indicator | Holdout period | MAE | RMSE |
+|---|---|---|---|
+| CPI | [YYYY–YYYY] | [ ] | [ ] |
+| Federal Funds Rate | [YYYY–YYYY] | [ ] | [ ] |
+| S&P 500 | [YYYY–YYYY] | [ ] | [ ] |
 
-Examines long-term changes in consumer price levels, highlighting inflationary periods and the evolution of prices across several decades.
+> ✏️ Copy these from [`reports/model_accuracy.txt`](reports/model_accuracy.txt) so readers don't have to open another file.
 
-<!-- INSERT VISUAL: visuals/cpi_trend_long_history.png -->
+**Context:** the evaluation period spans the 2021–2023 inflation shock and monetary policy changes, which makes forecasting harder. See `reports/model_accuracy.txt` for the actual scores.
 
-#### US Unemployment Rate
+### Modelling lessons
 
-Explores historical labour-market conditions and fluctuations in unemployment across different economic periods.
+- **Trend continuity:** forecasts should join the historical series without artificial jumps.
+- **Clean evaluation:** training and test periods must be strictly separated to avoid inflated scores.
+- **Bounded series:** interest rates need logistic (capped) growth rather than unrestricted extrapolation.
+- **Uncertainty matters:** wider intervals are information, not a flaw.
+- **Regime change:** relationships between indicators are not stable over time.
 
-<!-- INSERT VISUAL: visuals/unrate_trend_long_history.png -->
+<a id="quick-start"></a>
 
-#### Federal Funds Rate
+## 🚀 Quick Start
 
-Examines historical monetary policy movements, including major interest-rate cycles and changes in the federal funds rate.
+**Requirements:** Python 3.9+, Git. Prophet can be the fussiest dependency to install. If `pip` fails, see the [Prophet install guide](https://facebook.github.io/prophet/docs/installation.html).
 
-<!-- INSERT VISUAL: visuals/fedfunds_trend_long_history.png -->
+```bash
+# 1. Clone
+git clone https://github.com/UjjawalKr-01/market-economic-analytics.git
+cd market-economic-analytics
 
-### 2. Macroeconomic Correlation Analysis
+# 2. Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate        # macOS / Linux
+venv\Scripts\activate           # Windows
 
-Correlation analysis was performed to investigate relationships between the selected economic indicators.
+# 3. Install dependencies
+pip install -r requirements.txt
 
-#### Long-Term Correlation (1954–2025)
+# 4. Launch Jupyter
+jupyter notebook
+```
 
-The historical correlation analysis examines relationships between CPI, unemployment, and the Federal Funds Rate.
+Then run the notebooks **in order**, since each one depends on the outputs of the previous:
 
-<!-- INSERT VISUAL: visuals/correlation_heatmap_long_history.png -->
+| # | Notebook | What it does |
+|---|---|---|
+| 1 | [`01_data_loading_cleaning.ipynb`](notebook/01_data_loading_cleaning.ipynb) | Loads FRED data, cleans it, builds both datasets |
+| 2 | [`02_eda.ipynb`](notebook/02_eda.ipynb) | Trends, correlations, indexed comparisons |
+| 3 | [`03_predictive_modelling.ipynb`](notebook/03_predictive_modelling.ipynb) | Prophet models, forecasts, MAE/RMSE evaluation |
 
-#### Recent Correlation Including S&P 500 (2021–2025)
-
-The combined dataset enables correlation analysis across all four indicators, including the S&P 500.
-
-<!-- INSERT VISUAL: visuals/correlation_heatmap_recent_with_sp500.png -->
-
-The recent-period analysis provides an additional perspective on the relationships between inflation, labour-market conditions, interest rates, and equity market movements.
-
-**Note:** Correlation measures statistical association, not causation. Results are also sensitive to the selected observation period and economic conditions.
-
-### 3. Recent S&P 500 Market Trend
-
-The S&P 500 was analysed separately to examine its recent historical performance.
-
-<!-- INSERT VISUAL: visuals/sp500_trend_recent.png -->
-
-This analysis provides historical context for the subsequent S&P 500 forecasting exercise.
-
----
-
-## Time-Series Forecasting
-
-Prophet was used to develop forecasting models for selected economic and financial indicators.
-
-Rather than assuming that all economic series follow identical patterns, separate forecasting approaches were considered according to the behaviour of each indicator.
-
-The forecasting exercises cover a five-year horizon, with the resulting estimates and uncertainty intervals visualised alongside historical observations.
-
-### 1. CPI Forecast
-
-The CPI forecasting model explores the continuation of historical price-level trends over the forecast horizon.
-
-<!-- INSERT VISUAL: visuals/cpi_forecast.png -->
-
-### 2. Federal Funds Rate Forecast
-
-The Federal Funds Rate model examines potential future rate movements while accounting for the bounded nature of the selected forecasting approach.
-
-<!-- INSERT VISUAL: visuals/fedfunds_forecast.png -->
-
-### 3. S&P 500 Forecast
-
-The S&P 500 forecasting model investigates potential future equity-index trends using its available historical observations.
-
-<!-- INSERT VISUAL: visuals/sp500_forecast.png -->
-
-The widening uncertainty interval highlights the difficulty of extrapolating financial market behaviour over extended periods.
-
----
-
-## Model Evaluation
-
-Forecasting performance was evaluated using standard regression error metrics.
-
-| Metric | Description |
-|---|---|
-| MAE | Mean Absolute Error — measures the average absolute prediction error |
-| RMSE | Root Mean Squared Error — penalises larger prediction errors more heavily |
-
-The evaluation process considers the difference between actual and predicted values, rather than relying exclusively on visual inspection of forecast plots.
-
-Actual model scores should be reported alongside the corresponding indicator and evaluation period.
-
-## Model Refinement & Analytical Considerations
-
-During model development, several important forecasting considerations were identified:
-
-- **Trend continuity:** Forecasts should connect appropriately with the historical series without introducing artificial discontinuities.
-- **Evaluation methodology:** Training and evaluation periods must be separated appropriately to avoid misleading performance estimates.
-- **Bounded forecasting:** Interest-rate indicators require consideration of their bounded behaviour rather than unrestricted extrapolation.
-- **Forecast uncertainty:** Wider uncertainty intervals indicate greater uncertainty in future estimates.
-- **Economic regime changes:** Historical relationships may not remain stable under changing monetary, financial, and economic conditions.
-
-These considerations are important when interpreting forecasts of economic indicators, where unexpected events and policy decisions can significantly alter historical patterns.
-
-## Limitations
-
-Long-term economic forecasting involves uncertainty that cannot be eliminated through statistical modelling alone.
-
-The main limitations include:
-
-- **Historical dependency:** Forecasting models rely on historical observations and may not anticipate unprecedented economic events.
-- **Structural changes:** Economic relationships can change across different monetary and economic regimes.
-- **Limited S&P 500 history:** The shorter observation window limits the historical information available for training and evaluation.
-- **Monetary policy uncertainty:** Federal Funds Rate movements depend on policy decisions and changing economic conditions.
-- **Forecast uncertainty:** Predictions become less certain as the forecast horizon increases.
-
-The generated forecasts should therefore be interpreted as model-based estimates rather than definitive predictions of future economic conditions.
-
----
-
-## Project Structure
+## 📁 Repository Structure
 
 ```text
 market-economic-analytics/
-│
-├── visuals/
-│   ├── cpi_trend_long_history.png
-│   ├── unrate_trend_long_history.png
-│   ├── fedfunds_trend_long_history.png
-│   ├── correlation_heatmap_long_history.png
-│   ├── correlation_heatmap_recent_with_sp500.png
-│   ├── sp500_trend_recent.png
-│   ├── indexed_indicators_2021_2025.png
-│   ├── cpi_forecast.png
-│   ├── fedfunds_forecast.png
-│   └── sp500_forecast.png
-│
-├── notebooks/
-│   └── Jupyter analysis notebooks
-│
-├── data/
-│   └── Raw and processed datasets
-│
-├── reports/
-│   └── Analytical and model evaluation reports
-│
+├── Data/
+│   ├── raw/             # Original FRED downloads
+│   └── processed/       # Cleaned datasets and forecast outputs
+├── models/              # Saved Prophet models (.pkl)
+├── notebook/            # 01 → 02 → 03, run in order
+├── reports/             # model_accuracy.txt, correlation outputs
+├── visuals/             # Exported charts (.png)
 ├── requirements.txt
 └── README.md
 ```
 
-*The directory layout above describes the intended organisation; adjust folder names to match the actual repository.*
+<a id="limitations"></a>
 
-## Installation & Execution
+## ⚠️ Limitations
 
-### 1. Clone the Repository
+- **Historical dependency:** models learn from the past and cannot foresee unprecedented events.
+- **Structural change:** economic relationships shift between monetary and economic regimes.
+- **Short S&P 500 history:** limits both training and evaluation.
+- **Policy uncertainty:** the Fed Funds Rate depends on human decisions, not just trends.
+- **Horizon effect:** uncertainty grows the further ahead you forecast.
 
-```bash
-git clone https://github.com/UjjawalKr-01/market-economic-analytics.git
+These forecasts are **model-based estimates, not predictions or financial advice**.
 
-cd market-economic-analytics
-```
+## 🛣️ Future Work
 
-### 2. Create a Virtual Environment
+> None of the items below are implemented in the current version of this project. They are ideas for possible extensions.
 
-```bash
-python -m venv venv
-```
+- Compare Prophet with alternative time-series forecasting techniques
+- Introduce rolling-window and walk-forward validation
+- Investigate economic relationships across different historical regimes
+- Expand to additional international economic indicators and other financial or macroeconomic datasets
+- Develop an interactive dashboard for exploring indicators and forecasts
 
-Activate it on Windows:
+## 🧰 Skills Demonstrated
 
-```bash
-venv\Scripts\activate
-```
+Data cleaning & preprocessing · Exploratory data analysis · Correlation analysis · Time-series forecasting · Model evaluation (MAE, RMSE) · Data visualisation · Macroeconomic analysis
 
-### 3. Install Dependencies
+## 👤 Author
 
-```bash
-pip install -r requirements.txt
-```
+**Ujjawal Kumar** · [@UjjawalKr-01](https://github.com/UjjawalKr-01)
 
-### 4. Launch Jupyter Notebook
+Feedback and suggestions are welcome via [issues](https://github.com/UjjawalKr-01/market-economic-analytics/issues).
 
-```bash
-jupyter notebook
-```
+## 📄 License & Acknowledgements
 
-Open the project's notebooks and execute the data preparation, exploratory analysis, and forecasting stages in their intended order.
-
-*The commands assume the repository contains a compatible `requirements.txt` and Jupyter notebooks.*
-
----
-
-## Skills Demonstrated
-
-- Data Collection and Preprocessing
-- Exploratory Data Analysis (EDA)
-- Statistical Analysis and Correlation
-- Macroeconomic Data Analysis
-- Time-Series Analysis
-- Predictive Modelling
-- Forecast Evaluation
-- Data Visualisation
-- Analytical Problem Solving
-- Working with Real-World Economic Datasets
-
-## Future Improvements
-
-Potential directions for extending the project include:
-
-- Expanding the analysis to additional international economic indicators.
-- Incorporating more financial and macroeconomic datasets.
-- Comparing Prophet with alternative time-series forecasting techniques.
-- Introducing rolling-window and walk-forward validation.
-- Investigating economic relationships across different historical regimes.
-- Developing an interactive dashboard for exploring economic indicators and forecasts.
-
----
-
-## Author
-
-**Ujjawal Kumar**
-
-GitHub: [UjjawalKr-01](https://github.com/UjjawalKr-01)
-
-Repository: [Market & Economic Analytics](https://github.com/UjjawalKr-01/market-economic-analytics)
-
----
-
-*An independent data analytics project exploring historical macroeconomic behaviour, financial market trends, and the practical challenges of time-series forecasting.*
+<!-- Add a LICENSE file (MIT is a common choice) and update this line. -->
+Data retrieved from [FRED](https://fred.stlouisfed.org/), maintained by the Federal Reserve Bank of St. Louis. Underlying series are produced by the U.S. Bureau of Labor Statistics, the Federal Reserve Board and S&P Dow Jones Indices. Forecasting built with [Prophet](https://facebook.github.io/prophet/).**
